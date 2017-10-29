@@ -13,6 +13,20 @@ var promoRouter = require('./routes/promoRouter');
 
 var app = express();
 
+const mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+const Dishes = require('./models/dishes');
+const url = 'mongodb://localhost:27017/conFusion';
+const connect = mongoose.connect(url, {
+  useMongoClient: true,
+  /* other options*/
+});
+
+connect.then((db) => {
+  console.log('Connected correctly to the server');
+}, (err) => { console.log(err);
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

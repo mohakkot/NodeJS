@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var fileStore = require('session-file-store')(session);
+var passport = require('passport');
+var authenticate = require('./authenticate');
 
 
 var index = require('./routes/index');
@@ -47,25 +49,21 @@ app.use(session({
   store: new fileStore()
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/', index);
 app.use('/users', users);
 
 function auth(req,res,next){
   console.log(req.session);
-  if(!req.session.user){
+  if(!req.user){
     var err = new Error('You are not Authenticated');
+    res.setHeader('WWW-Authenticate', 'Basic');  
     err.status = 401;
     return next(err);
   } 
   else{
-    if(req.session.user === 'authenticated'){
       next();
-    }
-    else{
-      var err = new Error("You are not Authenticated");
-      err.status = 403;
-      return next(err);  
-    }
   }
 }
 app.use(auth);

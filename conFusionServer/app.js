@@ -18,6 +18,14 @@ var leaderRouter = require('./routes/leaderRouter');
 var promoRouter = require('./routes/promoRouter');
 
 var app = express();
+app.all('*',(req,res,next) =>{
+  if(req.secure) {
+    return next();
+  }
+  else{
+    res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+  }
+});
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
